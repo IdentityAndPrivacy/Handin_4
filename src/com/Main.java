@@ -20,7 +20,7 @@ public class Main {
     public static void main(String[] args) {
 	    // From web client
         String username = "1";
-        String password = "222";
+        String password = "111";
 
         BigInteger I = new BigInteger(username);
 
@@ -29,7 +29,7 @@ public class Main {
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            k = new BigInteger(md.digest((N.toString() + g.toString()).getBytes()));
+            k = (new BigInteger(md.digest((N.toString() + g.toString()).getBytes("UTF-8")))).mod(N);
 
         }
         catch (Exception e){

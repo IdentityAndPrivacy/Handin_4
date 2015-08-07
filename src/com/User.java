@@ -14,7 +14,7 @@ public class User {
 
     public User(BigInteger I, BigInteger p, BigInteger g, BigInteger N){
         this.I = I;
-        generateRandomSalt();
+        generateRandomSalt(N);
         calculate_v(N, g, p);
     }
 
@@ -22,14 +22,14 @@ public class User {
         BigInteger x;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            x = new BigInteger(md.digest((s.toString() + p.toString()).getBytes()));
+            x = (new BigInteger(md.digest((s.toString() + p.toString()).getBytes("UTF-8")))).mod(N);
             v = g.modPow( x, N);
         }
         catch (Exception e){
         }
     }
 
-    public void generateRandomSalt(){
-        s = new BigInteger(10, new Random());
+    public void generateRandomSalt(BigInteger N){
+        s = (new BigInteger(10, new Random())).mod(N);
     }
 }

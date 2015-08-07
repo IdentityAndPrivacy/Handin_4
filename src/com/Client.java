@@ -25,14 +25,14 @@ public class Client {
 
     public Client(BigInteger I, String password, BigInteger N, BigInteger g, BigInteger k){
         this.I = I;
-        this.p = new BigInteger(password);
+        this.p = (new BigInteger(password)).mod(N);
         this.N = N;
         this.g = g;
         this.k = k;
     }
 
     public void generateRandomNumber_a() {
-        a = new BigInteger(32, new Random());
+        a = (new BigInteger(32, new Random())).mod(N);
     }
 
 
@@ -43,7 +43,7 @@ public class Client {
     public void calculate_u() {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            u = new BigInteger(md.digest((A.toString() + B.toString()).getBytes()));
+            u = (new BigInteger(md.digest((A.toString() + B.toString()).getBytes("UTF-8")))).mod(N);
 
         }
         catch (Exception e){
@@ -53,7 +53,7 @@ public class Client {
     public void calculate_x() {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            x = new BigInteger(md.digest((s.toString() + p.toString()).getBytes()));
+            x = (new BigInteger(md.digest((s.toString() + p.toString()).getBytes("UTF-8")))).mod(N);
         }
         catch (Exception e){
             System.out.println(e);
@@ -62,7 +62,7 @@ public class Client {
 
     public void calculate_S() {
         BigInteger temp1 = B.subtract(k.multiply(g.modPow(x, N)));
-        S = temp1.modPow(a.add(u.multiply(x)), N); // S = (B - (k*g^x))^(a+ux)
+        S = (temp1.modPow(a.add(u.multiply(x)), N)).mod(N); // S = (B - (k*g^x))^(a+ux)
 
         System.out.println("S in Client: " + S.toString());
     }
@@ -70,7 +70,7 @@ public class Client {
     public void calculate_K() {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            K = new BigInteger(md.digest(S.toString().getBytes()));
+            K = (new BigInteger(md.digest(S.toString().getBytes("UTF-8")))).mod(N);
         }
         catch (Exception e){
         }

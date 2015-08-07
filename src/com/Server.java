@@ -40,18 +40,18 @@ public class Server {
     }
 
     public void generateRandomNumber_b() {
-        b = new BigInteger(32, new Random());
+        b = (new BigInteger(32, new Random())).mod(N);
     }
 
     public void calculateB() {
-        B = k.multiply(currentUser.v).add(g.modPow(b,N)); // k*v + g^b (mod N)
+        B = (k.multiply(currentUser.v).add(g.modPow(b,N))).mod(N); // k*v + g^b (mod N)
     }
 
 
     public void calculate_u(){
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            u = new BigInteger(md.digest((A.toString() + B.toString()).getBytes()));
+            u = (new BigInteger(md.digest((A.toString() + B.toString()).getBytes("UTF-8")))).mod(N);
 
         }
         catch (Exception e){
@@ -59,7 +59,7 @@ public class Server {
     }
 
     public void calculate_S() {
-        S = (A.multiply(currentUser.v.modPow(u,N))).modPow(b, N);
+        S = ((A.multiply(currentUser.v.modPow(u,N))).modPow(b, N)).mod(N);
         System.out.println("S in Server: " + S.toString());
     }
 }
