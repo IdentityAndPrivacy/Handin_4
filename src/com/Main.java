@@ -15,6 +15,7 @@ public class Main {
     static Server server;
     static Client client;
     static BigInteger N = new BigInteger("167609434410335061345139523764350090260135525329813904557420930309800865859473551531551523800013916573891864789934747039010546328480848979516637673776605610374669426214776197828492691384519453218253702788022233205683635831626913357154941914129985489522629902540768368409482248290641036967659389658897350067939");
+    //static BigInteger N = new BigInteger("1907");
     static BigInteger g = new BigInteger("2");
 
     public static void main(String[] args) {
@@ -49,7 +50,7 @@ public class Main {
         send_I_A(I, client.A);
 
         // Server computations
-        server.lookup(I);
+        server.lookup(server.I);
         server.generateRandomNumber_b();
         server.calculateB();
 
@@ -61,10 +62,32 @@ public class Main {
         client.calculate_x();
         client.calculate_S();
         client.calculate_K();
+        client.calculate_M1();
+
 
         // Server computation
         server.calculate_u();
         server.calculate_S();
+        server.calculate_K();
+        server.calculate_M1();
+
+        // Client --> Server
+        send_M1(client.M1);
+
+        // Server computations
+        if (server.verify_M1()){
+            server.calculate_M2();
+            client.calculate_M2();
+
+            // Server --> Client
+            send_M2(server.M2);
+
+            if (client.verify_M2()){
+                // Print success
+                System.out.println("Success! M2 is the same on client and server");
+            }
+
+        }
 
     }
 
@@ -85,5 +108,12 @@ public class Main {
     public static void send_s_B(BigInteger s, BigInteger B){
         client.s = s;
         client.B = B;
+    }
+
+    public static void send_M1(BigInteger M1){
+        server.M1_client = M1;
+    }
+    public static void send_M2(BigInteger M2){
+        client.M2_server = M2;
     }
 }
